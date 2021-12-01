@@ -10,9 +10,7 @@ public class CoffeeMachine {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
-        CoffeeMachine.printSupplies();
-        System.out.println("Write action (buy, fill, take):");
+        System.out.println("Write action (buy, fill, take, remaining, exit):");
         String input = scanner.nextLine();
 
         switch (input) {
@@ -27,9 +25,10 @@ public class CoffeeMachine {
                 CoffeeMachine.printSupplies();
                 break;
             case "take":
-                CoffeeMachine.take(dollarsLeft);
-                printSupplies();
+                CoffeeMachine.take();
                 break;
+            case "remaining":
+                CoffeeMachine.printSupplies();
             default:
                 break;
 
@@ -94,8 +93,9 @@ public class CoffeeMachine {
 
     }
 
-    public static void take(int dollarsLeft) {
-        System.out.printf("I gave you $%d\n", dollarsLeft);
+    public static void take() {
+        System.out.printf("I gave you $%d\n", CoffeeMachine.dollarsLeft);
+        CoffeeMachine.dollarsLeft = 0;
     }
 }
 
