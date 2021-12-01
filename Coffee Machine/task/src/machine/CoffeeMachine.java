@@ -2,30 +2,33 @@ package machine;
 import java.util.Scanner;
 
 public class CoffeeMachine {
+    static int waterLeft = 400;
+    static int milkLeft = 540;
+    static int beansLeft = 120;
+    static int cupsLeft = 9;
+    static int dollarsLeft = 550;
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        int waterLeft = 400;
-        int milkLeft = 540;
-        int beansLeft = 120;
-        int cupsLeft = 9;
-        int dollarsLeft = 550;
 
-        printSupplies(waterLeft, milkLeft, beansLeft, cupsLeft, dollarsLeft);
+        CoffeeMachine.printSupplies();
         System.out.println("Write action (buy, fill, take):");
         String input = scanner.nextLine();
 
         switch (input) {
             case "buy":
-                System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:");
-                int coffeeType = scanner.nextInt();
-                buy(coffeeType, waterLeft, milkLeft, beansLeft, cupsLeft, dollarsLeft);
+                System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:");
+                String coffeeType = scanner.nextLine();
+                CoffeeMachine.buy(coffeeType);
+                CoffeeMachine.printSupplies();
                 break;
             case "fill":
-                fill(waterLeft, milkLeft, beansLeft, cupsLeft, dollarsLeft);
+                CoffeeMachine.fill();
+                CoffeeMachine.printSupplies();
                 break;
             case "take":
-                take(dollarsLeft);
-                printSupplies(waterLeft, milkLeft, beansLeft, cupsLeft, 0);
+                CoffeeMachine.take(dollarsLeft);
+                printSupplies();
                 break;
             default:
                 break;
@@ -34,7 +37,7 @@ public class CoffeeMachine {
 
     }
 
-    public static void printSupplies(int waterLeft, int milkLeft, int beansLeft, int cupsLeft, int dollarsLeft) {
+    public static void printSupplies() {
 
         System.out.println("The coffee machine has:\n");
         System.out.printf("%d ml of water\n", waterLeft);
@@ -44,18 +47,28 @@ public class CoffeeMachine {
         System.out.printf("$%d of money\n", dollarsLeft);
     }
 
-    public static void buy(int coffee, int water, int milk, int beans, int cups, int dollars) {
-        cups--;
+    public static void buy(String coffee) {
 
         switch (coffee) {
-            case 1:
-                printSupplies(water - 250, milk, beans - 16, cups, dollars + 4);
+            case "1":
+                CoffeeMachine.waterLeft -= 250;
+                CoffeeMachine.beansLeft -= 16;
+                CoffeeMachine.cupsLeft--;
+                CoffeeMachine.dollarsLeft += 4;
                 break;
-            case 2:
-                printSupplies(water - 350, milk - 75, beans - 20, cups, dollars + 7);
+            case "2":
+                CoffeeMachine.waterLeft -= 350;
+                CoffeeMachine.milkLeft -= 75;
+                CoffeeMachine.beansLeft -= 20;
+                CoffeeMachine.cupsLeft--;
+                CoffeeMachine.dollarsLeft += 7;
                 break;
-            case 3:
-                printSupplies(water - 200, milk - 100, beans - 12, cups, dollars + 6);
+            case "3":
+                CoffeeMachine.waterLeft -= 200;
+                CoffeeMachine.milkLeft -= 100;
+                CoffeeMachine.beansLeft -= 12;
+                CoffeeMachine.cupsLeft--;
+                CoffeeMachine.dollarsLeft += 6;
                 break;
             default:
                 break;
@@ -64,22 +77,20 @@ public class CoffeeMachine {
     }
 
 
-    public static void fill(int waterLeft, int milkLeft, int beansLeft, int cupsLeft, int dollarsLeft) {
+    public static void fill() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Write how many ml of water you want to add:");
-        waterLeft += scanner.nextInt();
+        CoffeeMachine.waterLeft += scanner.nextInt();
 
         System.out.println("Write how many ml of milk you want to add:");
-        milkLeft += scanner.nextInt();
+        CoffeeMachine.milkLeft += scanner.nextInt();
 
         System.out.println("Write how many grams of coffee you want to add:");
-        beansLeft += scanner.nextInt();
+        CoffeeMachine.beansLeft += scanner.nextInt();
 
         System.out.println("Write how many disposable cups coffee you want to add:");
-        cupsLeft += scanner.nextInt();
-
-        printSupplies(waterLeft, milkLeft, beansLeft, cupsLeft, dollarsLeft);
+        CoffeeMachine.cupsLeft += scanner.nextInt();
 
     }
 
