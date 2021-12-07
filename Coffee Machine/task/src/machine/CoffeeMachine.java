@@ -1,4 +1,5 @@
 package machine;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class CoffeeMachine {
@@ -7,38 +8,16 @@ public class CoffeeMachine {
     static int beansLeft = 120;
     static int cupsLeft = 9;
     static int dollarsLeft = 550;
+    static State state;
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Write action (buy, fill, take, remaining, exit):");
-        String input = scanner.nextLine();
-
-        while (!"exit".equals(input)) {
-            switch (input) {
-                case "buy":
-                    System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:");
-                    String coffeeType = scanner.nextLine();
-                    CoffeeMachine.buy(coffeeType);
-                    break;
-                case "fill":
-                    CoffeeMachine.fill();
-                    break;
-                case "take":
-                    CoffeeMachine.take();
-                    break;
-                case "remaining":
-                    CoffeeMachine.printSupplies();
-                    break;
-                default:
-                    break;
-
-            }
-            System.out.println("Write action (buy, fill, take, remaining, exit):");
-            input = scanner.nextLine();
-
-        }
-
+    enum State {
+        BUY,
+        FILL,
+        TAKE,
+        REMAINING,
+        EXIT
     }
+
 
     public static void printSupplies() {
 
@@ -131,6 +110,49 @@ public class CoffeeMachine {
     public static void take() {
         System.out.printf("I gave you $%d\n", CoffeeMachine.dollarsLeft);
         CoffeeMachine.dollarsLeft = 0;
+    }
+
+    public static void interact(String input) {
+        state = State.valueOf(input.toUpperCase());
+
+        switch (state) {
+            case BUY:
+
+        }
+
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Write action (buy, fill, take, remaining, exit):");
+        interact(scanner.nextLine());
+
+        while (state != State.EXIT) {
+            switch (state) {
+                case BUY:
+                    System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:");
+                    String coffeeType = scanner.nextLine();
+                    CoffeeMachine.buy(coffeeType);
+                    break;
+
+                case "fill":
+                    CoffeeMachine.fill();
+                    break;
+                case "take":
+                    CoffeeMachine.take();
+                    break;
+                case "remaining":
+                    CoffeeMachine.printSupplies();
+                    break;
+                default:
+                    break;
+
+            }
+            System.out.println("Write action (buy, fill, take, remaining, exit):");
+            input = scanner.nextLine();
+
+        }
+
     }
 }
 
