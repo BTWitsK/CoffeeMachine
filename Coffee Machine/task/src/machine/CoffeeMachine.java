@@ -8,14 +8,28 @@ public class CoffeeMachine {
     static int beansLeft = 120;
     static int cupsLeft = 9;
     static int dollarsLeft = 550;
-    static State state;
+    static State state = State.INPUT;
+    static Filling filling;
+    static Scanner scanner = new Scanner(System.in);
 
     enum State {
         BUY,
+        BUYING,
         FILL,
+        FILLING,
         TAKE,
+        INPUT,
         REMAINING,
-        EXIT
+        EXIT,
+        DONE
+    }
+
+    enum Filling {
+        WATER,
+        MILK,
+        BEANS,
+        CUPS,
+        DONE
     }
 
 
@@ -27,6 +41,7 @@ public class CoffeeMachine {
         System.out.printf("%d g of coffee beans\n", beansLeft);
         System.out.printf("%d disposable cups\n", cupsLeft);
         System.out.printf("$%d of money\n", dollarsLeft);
+        state = State.INPUT;
     }
 
     public static void buy(String coffee) {
@@ -90,66 +105,96 @@ public class CoffeeMachine {
     }
 
 
-    public static void fill() {
-        Scanner scanner = new Scanner(System.in);
+    public static void fill(String input) {
 
-        System.out.println("Write how many ml of water you want to add:");
-        CoffeeMachine.waterLeft += scanner.nextInt();
+        switch (filling) {
+            case WATER:
+                CoffeeMachine.waterLeft += Integer.parseInt(input);
+                filling = Filling.MILK;
+                System.out.println("Write how many ml of milk you want to add:");
+                interact(scanner.nextLine());
+                break;
+            case MILK:
+                CoffeeMachine.milkLeft += Integer.parseInt(input);
+                filling = Filling.BEANS;
+                System.out.println("Write how many grams of coffee you want to add:");
+                interact(scanner.nextLine());
+                break;
+            case BEANS:
+                CoffeeMachine.beansLeft += Integer.parseInt(input);
+                filling = Filling.CUPS;
+                System.out.println("Write how many disposable cups coffee you want to add:");
+                interact(scanner.nextLine());
+                break;
+            case CUPS:
+                CoffeeMachine.cupsLeft += Integer.parseInt(input);
+                filling = Filling.DONE;
+                state = State.INPUT;
+                break;
+            default:
+                break;
+        }
 
-        System.out.println("Write how many ml of milk you want to add:");
-        CoffeeMachine.milkLeft += scanner.nextInt();
 
-        System.out.println("Write how many grams of coffee you want to add:");
-        CoffeeMachine.beansLeft += scanner.nextInt();
-
-        System.out.println("Write how many disposable cups coffee you want to add:");
-        CoffeeMachine.cupsLeft += scanner.nextInt();
 
     }
 
     public static void take() {
         System.out.printf("I gave you $%d\n", CoffeeMachine.dollarsLeft);
         CoffeeMachine.dollarsLeft = 0;
+        state = State.INPUT;
     }
 
     public static void interact(String input) {
-        state = State.valueOf(input.toUpperCase());
 
         switch (state) {
             case BUY:
-
+                System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:");
+                state = State.BUYING;
+                interact(scanner.nextLine());
+                break;
+            case BUYING:
+                CoffeeMachine.buy(input);
+                state = State.INPUT;
+                break;
+            case FILL:
+                state = State.FILLING;
+                filling = Filling.WATER;
+                System.out.println("Write how many ml of water you want to add:");
+                interact(scanner.nextLine());
+                break;
+            case FILLING:
+                CoffeeMachine.fill(input);
+                break;
+            case DONE:
+                break;
+            case TAKE:
+                CoffeeMachine.take();
+                break;
+            case REMAINING:
+                CoffeeMachine.printSupplies();
+                break;
+            case EXIT:
+                break;
+            case INPUT:
+                state = State.valueOf(input.toUpperCase());
+            default:
+                state = State.valueOf(input.toUpperCase());
         }
 
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         System.out.println("Write action (buy, fill, take, remaining, exit):");
-        interact(scanner.nextLine());
+        String input = scanner.nextLine();
+        interact(input);
 
         while (state != State.EXIT) {
-            switch (state) {
-                case BUY:
-                    System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:");
-                    String coffeeType = scanner.nextLine();
-                    CoffeeMachine.buy(coffeeType);
-                    break;
+            interact(input);
 
-                case "fill":
-                    CoffeeMachine.fill();
-                    break;
-                case "take":
-                    CoffeeMachine.take();
-                    break;
-                case "remaining":
-                    CoffeeMachine.printSupplies();
-                    break;
-                default:
-                    break;
-
-            }
             System.out.println("Write action (buy, fill, take, remaining, exit):");
             input = scanner.nextLine();
+            interact(input);
 
         }
 
